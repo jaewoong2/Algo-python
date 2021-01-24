@@ -155,17 +155,10 @@ def best_album():
         print(hash_map)
 
         for genre in hash_map:
-            hash_map[genre]['values'].sort(key= lambda x: x[1])
+            hash_map[genre]['values'].sort(key= lambda x: (x[1], -x[0]))
             lists.append((genre, hash_map[genre]['sum']))
+        print(hash_map)
         lists.sort(key = lambda x: (x[1]))
-
-        for genre in hash_map:
-            for idx in range(len(hash_map[genre]['values'])):
-                for jdx in range(idx, len(hash_map[genre]['values'])):
-                    if hash_map[genre]['values'][idx][0] < hash_map[genre]['values'][jdx][0] and hash_map[genre]['values'][idx][1] == hash_map[genre]['values'][jdx][1]:
-                        temp = hash_map[genre]['values'][idx]
-                        hash_map[genre]['values'][idx] = hash_map[genre]['values'][jdx]
-                        hash_map[genre]['values'][jdx] = temp
 
         while len(lists) > 0:
             genre, count = lists.pop()
@@ -197,7 +190,7 @@ def best_album():
         return answer
 
 
-    return solution_good(genres, plays)
+    return solution(genres, plays)
 
 
 print(best_album())
