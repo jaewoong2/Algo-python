@@ -147,27 +147,26 @@ def best_album():
 
         for genre in genres:
             if not genre in hash_map:
-                hash_map[genre] = {'values': [(idx, int(plays[idx]))], "sum": int(plays[idx])}
+                hash_map[genre] = [(idx, int(plays[idx]))]
             else:
-                hash_map[genre]['values'].append((idx, int(plays[idx])))
-                hash_map[genre]['sum'] += int(plays[idx])
+                hash_map[genre].append((idx, int(plays[idx])))
             idx += 1
-        print(hash_map)
 
         for genre in hash_map:
-            hash_map[genre]['values'].sort(key= lambda x: (x[1], -x[0]))
-            lists.append((genre, hash_map[genre]['sum']))
-        print(hash_map)
+            # sort 람다식은, x: (최우선, 최우선이 같다면 다음 고려사항) 이런식으로 설정 할 수 있다.
+            hash_map[genre].sort(key= lambda x: (x[1], -x[0]))
+            lists.append((genre, sum([x[1] for x in hash_map[genre]])))
         lists.sort(key = lambda x: (x[1]))
 
         while len(lists) > 0:
             genre, count = lists.pop()
             genre_limit = 0
 
-            while len(hash_map[genre]['values']) > 0 and genre_limit < 2:
-                index, counts = hash_map[genre]['values'].pop()
+            while len(hash_map[genre]) > 0 and genre_limit < 2:
+                index, counts = hash_map[genre].pop()
                 result.append(index)
                 genre_limit += 1
+
         return result
 
     def solution_good(genres, plays):
