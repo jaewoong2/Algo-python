@@ -35,7 +35,30 @@ def stock_price():
 
     return solution(prices=[1,2,3,2,3])
 
-print(stock_price())
+# print(stock_price())
+
+# 주식가격 문제 복습
+def stock_price_stack():
+    def solution(prices):
+        import collections
+        answer = []
+        prices_queue = collections.deque(prices)
+
+        while prices_queue:
+            count = 0
+            price = prices_queue.popleft()
+
+            for price_next in prices_queue:
+                count += 1
+                if price_next < price:
+                    break
+            answer.append(count)
+
+        return answer
+
+    return solution([1,2,3,2,3])
+
+print(stock_price_stack(), '<- 1번 문제')
 
 # 기능개발
 
@@ -89,6 +112,36 @@ def developing():
     return solution(progresses, speeds)
 
 print(developing())
+
+# 기능 개발 문제 복습
+def dev_work():
+    progresses = [95, 90, 99, 99, 80, 99]
+    speeds = [1, 1, 1, 1, 1, 1]
+    def solution(progresses, speeds):
+        from collections import deque
+        answer = []
+        time = 0
+        count = 0
+
+        progresses = deque(progresses)
+        speeds = deque(speeds)
+
+        while progresses:
+            if progresses[0] + time * speeds[0] >= 100:
+                progresses.popleft()
+                speeds.popleft()
+                count += 1
+            else:
+                if count > 0:
+                    answer.append(count)
+                    count = 0
+                time += 1
+        answer.append(count)
+        return answer
+
+    return solution(progresses, speeds)
+print(dev_work())
+
 
 def truck_cross_the_bridge():
     def solution(bridge_length, weight, truck_weights):
@@ -179,3 +232,49 @@ def truck_cross_the_bridge():
     return solution_class(5, 5, [2, 2, 2, 2, 1, 1, 1, 1, 1]) # 19
 
 print(truck_cross_the_bridge())
+
+
+def printer():
+    def solution(priorities, location):
+        import collections
+        priorities_queue = collections.deque((priorities[i], i) for i in range(len(priorities)))
+        result = []
+        while priorities_queue:
+            flag = False
+            now = priorities_queue.popleft()
+
+            for i in range(len(priorities_queue)):
+                if now[0] < priorities_queue[i][0]:
+                    priorities_queue.append(now)
+                    flag = True
+                    break
+
+            if flag == False:
+                result.append(now[1])
+
+        return result.index(location) + 1
+
+    return solution([1, 1, 9, 1, 1, 1], 0)
+
+print(printer())
+
+
+def printer_review():
+    def solution(priorities, location):
+        from collections import deque
+        priorities_queue = deque([(index, priority) for index, priority in enumerate(priorities)])
+        answer = 0
+        while priorities_queue:
+            priority = priorities_queue.popleft()
+
+            if any([priority[1] < next_priority[1] for next_priority in priorities_queue]):
+                priorities_queue.append(priority)
+            else:
+                answer += 1
+                if priority[0] == location:
+                    break
+        return answer
+
+    return solution([1, 1, 9, 1, 1, 1], 0)
+
+print(printer_review)
