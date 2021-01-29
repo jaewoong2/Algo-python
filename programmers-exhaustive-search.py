@@ -91,7 +91,6 @@ print(carpet())
 
 
 def dfs_permutation(array, r):
-    # array 의 길이
     i_array = [(x, i) for i, x in enumerate(array)]
     stack = [[i] for _, i in i_array]
     return_list = []
