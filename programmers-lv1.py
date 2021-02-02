@@ -196,3 +196,125 @@ def hate_same_number():
     return solution([1,1,3,3,0,1,1])
 
 print(hate_same_number())
+
+
+def budget():
+    def solution(d, budget):
+        answer = 0
+        d.sort()
+        for w in d:
+            if budget >= w:
+                budget -= w
+                answer += 1
+
+        return answer
+
+    return (solution([2,2,3,3], 10))
+
+print(budget())
+
+
+def map():
+    n = 5
+    arr1 = [9, 20, 28, 18, 11]
+    arr2 = [30, 1, 21, 17, 28]
+    def solution(n, arr1, arr2):
+        answer = []
+        arr1_map = []
+        arr2_map = []
+
+        for v in arr1:
+            map = ''
+            while v > 0:
+                s = v % 2
+                if s == 1:
+                   map = "#" + map
+                if s == 0:
+                    map = '_' + map
+                v = v // 2
+            if len(map) < 5:
+                if v == 1:
+                    map = "#" + map
+                if v == 0:
+                    map = '_' + map
+            arr1_map.append(map)
+
+
+        for v in arr2:
+            map = ''
+            while v > 0:
+                s = v % 2
+                if s == 1:
+                   map = "#" + map
+                if s == 0:
+                    map = '_' + map
+                v = v // 2
+
+            if len(map) < n:
+                if v == 1:
+                    map = "#" + map
+                if v == 0:
+                    map = '_' + map
+
+            while len(map) < n:
+                map = map[0] + map
+
+            arr2_map.append(map)
+
+        for i in range(n):
+            map = ''
+            for j in range(n):
+                if arr1_map[i][j] == "#" or arr2_map[i][j] == "#":
+                    map += "#"
+                else:
+                    map += ' '
+            answer.append(map)
+
+        return answer
+
+    return solution(n, arr1, arr2)
+
+print(map())
+
+
+def key_pad():
+    def solution(numbers, hand):
+        answer = ''
+        left_position = [3, 0]
+        right_position = [3, 2]
+        keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9], ["*", 0, "#"]]
+
+        for now in numbers:
+
+            for i in range(len(keypad)):
+                if now == keypad[i][0]:
+                    answer += "L"
+                    left_position = [i, 0]
+
+                elif now == keypad[i][2]:
+                    answer += "R"
+                    right_position = [i, 2]
+
+                elif now == keypad[i][1]:
+                    right_diff = abs(i - right_position[0]) + abs(1 - right_position[1])
+                    left_diff = abs(i - left_position[0]) + abs(1 - left_position[1])
+
+                    if right_diff > left_diff:
+                        answer += 'L'
+                        left_position = [i, 1]
+                    elif right_diff < left_diff:
+                        answer += 'R'
+                        right_position = [i, 1]
+
+                    elif right_diff == left_diff:
+                        if hand == 'right':
+                            answer += 'R'
+                            right_position = [i, 1]
+                        else:
+                            answer += 'L'
+                            left_position = [i, 1]
+        return answer
+
+    return solution([7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2], "left")
+
+print(key_pad())
