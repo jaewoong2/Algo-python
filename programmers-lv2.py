@@ -268,7 +268,7 @@ def menu_renewal():
 
     return solution_itertools(orders, course)
 
-print(menu_renewal())
+# print(menu_renewal())
 
 
 def joy_stick():
@@ -318,7 +318,7 @@ def joy_stick():
 
         return count
 
-    print(solution("BBBAAAB"))  # 8
+    # print(solution("BBBAAAB"))  # 8
     # print(solution("ABABAAAAABA"))  # 10
     # print(solution("CANAAAAANAN"))  # 48
     # print(solution("ABAAAAABAB"))  # 8
@@ -334,11 +334,6 @@ def joy_stick():
     # return solution("AAAAAA")
 
 # print(joy_stick())
-
-def joy_stick_2():
-    def solution():
-        alphabet = [x.upper() for x in "abcdefghijklmnopqrstuvwxyz"]
-
 
 
 def get_bigger():
@@ -366,4 +361,109 @@ def get_bigger():
         return answer
     return solution("1924", 2)
 
-print(get_bigger())
+# print(get_bigger())
+
+
+
+# https://programmers.co.kr/learn/courses/30/lessons/60058
+def bracket():
+    def solution(p):
+
+        def is_perfect(p):
+            perfect = 0
+            p = list(p)
+
+            for word in p:
+                if word == "(":
+                    perfect += 1
+                else:
+                    perfect -= 1
+
+                if perfect < 0:
+                    break
+
+            return perfect >= 0
+
+        def bracket_recrusive(w):
+            w = list(w)
+            is_left = 0
+            is_right = 0
+            u, v = [], []
+
+            for i in range(len(w)):
+                if w[i] == "(":
+                    is_left += 1
+                else:
+                    is_right += 1
+
+                if is_left == is_right and is_left != 0:
+                    u = w[0: i + 1]
+                    v = w[i + 1: len(w)]
+                    break
+
+            if v == [] and is_perfect(u):
+                return ''.join(u)
+
+            if not is_perfect(u):
+                u = u[1: len(u) - 1]
+                for i in range(len(u)):
+                    if u[i] == "(":
+                        u[i] = ")"
+                    elif u[i] ==")":
+                        u[i] = "("
+                v = bracket_recrusive(v)
+                u = ["("] + list(v) + [")"] + list(u)
+                return ''.join(u)
+            else:
+                v = bracket_recrusive(v)
+                return ''.join(u) + ''.join(v)
+
+        return bracket_recrusive(p)
+
+    return solution(")()()()(")
+
+# print(bracket())
+
+# https://programmers.co.kr/learn/courses/30/lessons/42885
+def life_boat():
+    def solution(people, limit):
+        from collections import deque
+        peoples = deque(sorted(people))
+        boat = 0
+
+        while len(peoples) > 0:
+            if peoples[0] + peoples[len(peoples) - 1] <= limit and len(peoples) > 1:
+                peoples.popleft()
+                peoples.pop()
+                boat += 1
+            else:
+                boat +=1
+                peoples.pop()
+
+        return boat
+
+    return solution([70, 80, 50], 100)
+
+print(life_boat())
+
+# https://programmers.co.kr/learn/courses/30/lessons/12909#
+def bracket_easy():
+    def solution(s):
+        def is_perfect(p):
+            perfect = 0
+            p = list(p)
+
+            for word in p:
+                if word == "(":
+                    perfect += 1
+                else:
+                    perfect -= 1
+
+                if perfect < 0:
+                    break
+
+            return perfect == 0
+
+        return is_perfect(s)
+    return solution("()())")
+print(bracket_easy())
