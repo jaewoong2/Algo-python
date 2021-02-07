@@ -359,7 +359,23 @@ def get_bigger():
             length -= 1
 
         return answer
-    return solution("1924", 2)
+
+    def solution_stack(number, k):
+        stack = [number[0]]
+        number = number[1:]
+
+        for num in number:
+            while stack and stack[-1] < num and k > 0:
+                stack.pop()
+                k -= 1
+            stack.append(num)
+        print(stack)
+        if k > 0:
+            stack = stack[0:-k]
+
+        return ''.join(stack)
+
+    return solution_stack("999988", 2)
 
 # print(get_bigger())
 
@@ -466,4 +482,91 @@ def bracket_easy():
 
         return is_perfect(s)
     return solution("()())")
-print(bracket_easy())
+# print(bracket_easy())
+
+def find_biggest_rect():
+
+    def solution(board):
+        row_length = len(board)
+        col_length = len(board[0])
+        # dp = [[board[row][col] for col in range(col_length)] for row in range(row_length)]
+        result = 0
+
+        for row in range(1, row_length):
+            for col in range(1, col_length):
+                if board[row][col] == 1:
+                    if board[row - 1][col] >= 1 and board[row][col - 1] >= 1 and board[row - 1][col - 1] >= 1:
+                        board[row][col] = min(board[row - 1][col], board[row][col - 1], board[row - 1][col - 1]) + 1
+        return max([x for y in board for x in y]) ** 2
+
+
+    return solution([[0,1,1,1],[1,1,1,1],[1,1,1,1],[0,0,1,0]])
+# print(find_biggest_rect())
+
+
+def coin_changer():
+    def solution(coins, cost):
+        dp = [9999999] * (cost + 1)
+        dp[0] = 0
+
+        for i in range(len(coins)):
+            for j in range(coins[i], cost + 1):
+                dp[j] = min(dp[j], dp[j - coins[i]] + 1)
+
+        return dp[cost]
+    return solution([1, 2, 5], 15)
+
+# print(coin_changer())
+
+
+# https://programmers.co.kr/learn/courses/30/lessons/12911
+def get_next_big_number():
+    def solution(n):
+        def get_binary(n):
+            binary = ""
+            while n > 0:
+                binary = str(n % 2) + binary
+                n = n // 2
+            if n > 0:
+                binary = str(n) + binary
+            return binary
+
+        binary_n_length_of_one = get_binary(n).count("1")
+
+        while True:
+            n += 1
+
+            # n 보다 큰 수중 1의 갯수가 같은 수 가 나오면 가장 가까운 같은 수 이기 떄문에 바로 리턴
+            if get_double(n).count("1") == binary_n_length_of_one:
+                return n
+
+    return solution(78)
+
+print(get_next_big_number())
+
+# https://programmers.co.kr/learn/courses/30/lessons/64065
+def tuple_kakao():
+    def solution(s: str):
+        list_s = s.split("},")
+
+        for i, a in enumerate(list_s):
+            list_a = a.split(",")
+
+            for j, b in enumerate(list_a):
+                word = [x for x in b if x.isdigit()]
+                list_a[j] = ''.join(word)
+            list_s[i] = list_a
+
+        list_s.sort(key= lambda x: len(x))
+
+        now = list_s[0]
+        for i in range(1, len(list_s)):
+            now += set(list_s[i]) - set(now)
+
+
+        return [int(x) for x in now]
+
+
+    return solution("{{1,2,3},{2,1},{1,2,4,3},{2}}")
+
+print(tuple_kakao())
