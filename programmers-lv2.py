@@ -460,7 +460,7 @@ def life_boat():
 
     return solution([70, 80, 50], 100)
 
-print(life_boat())
+# print(life_boat())
 
 # https://programmers.co.kr/learn/courses/30/lessons/12909#
 def bracket_easy():
@@ -514,6 +514,7 @@ def coin_changer():
                 dp[j] = min(dp[j], dp[j - coins[i]] + 1)
 
         return dp[cost]
+
     return solution([1, 2, 5], 15)
 
 # print(coin_changer())
@@ -537,12 +538,12 @@ def get_next_big_number():
             n += 1
 
             # n 보다 큰 수중 1의 갯수가 같은 수 가 나오면 가장 가까운 같은 수 이기 떄문에 바로 리턴
-            if get_double(n).count("1") == binary_n_length_of_one:
+            if get_binary(n).count("1") == binary_n_length_of_one:
                 return n
 
     return solution(78)
 
-print(get_next_big_number())
+# print(get_next_big_number())
 
 # https://programmers.co.kr/learn/courses/30/lessons/64065
 def tuple_kakao():
@@ -569,4 +570,136 @@ def tuple_kakao():
 
     return solution("{{1,2,3},{2,1},{1,2,4,3},{2}}")
 
-print(tuple_kakao())
+# print(tuple_kakao())
+
+
+def get_area():
+    # def solution(land):
+    #     visit = [[False for _ in range(len(land[0]))] for _ in range(len(land))]
+    #     result = []
+    #     def get_land(row, col, land):
+    #         if row + 1 == len(land):
+    #             visit[row][col] = True
+    #             return land[row][col]
+    #
+    #         temp = 0
+    #         for i in range(len(land[0])):
+    #             if col != i:
+    #                 if visit[row + 1][i] == True:
+    #                     temp = max(temp, land[row][col] + land[row + 1][i])
+    #                 else:
+    #                     temp = max(temp, land[row][col] + get_land(row + 1, i, land))
+    #                     visit[row + 1][i] = True
+    #         land[row][col] = temp
+    #
+    #         return land[row][col]
+    #
+    #     for i in range(len(land[0])):
+    #         result.append(get_land(0, i, land))
+    #
+    #
+    #     return max(result)
+
+    def solution_hyunta(land):
+
+        for i in range(1, len(land)):
+            for j in range(len(land[0])):
+                land[i][j] = max(land[i - 1][:j] + land[i - 1][j+1:]) + land[i][j]
+
+        return max(land[-1])
+
+    return solution_hyunta([[4, 3, 2, 1], [2, 2, 2, 1], [6, 6, 6, 4], [8, 7, 6, 5]])
+
+# print(get_area())
+
+
+def expression_of_number():
+    def solution(n):
+        count = 0
+        for i in range(1, n // 2 + 1):
+            sum_value = 0
+            while sum_value <= n:
+                sum_value += i
+                i += 1
+                if sum_value == n:
+                    count += 1
+                    break
+        return count + 1
+    return solution(15)
+
+# print(expression_of_number())
+
+
+
+def get_land():
+    def solution(land):
+        for i in range(1, len(land)):
+            for j in range(len(land[i])):
+                prev_land = [x for idx, x in enumerate(land[i - 1]) if j != idx]
+                land[i][j] += max(prev_land)
+
+        return max(land[-1])
+
+    return solution([[4, 3, 2, 1], [2, 2, 2, 1], [6, 6, 6, 4], [8, 7, 6, 5]])
+
+# print(get_land())
+
+
+def phone_cat_mon():
+    def solution(nums):
+        list = []
+        numbers = set(nums)
+
+        while len(list) < (len(nums) // 2):
+            if len(numbers) == 0:
+                break
+            list.append(numbers.pop())
+
+        return len(list)
+
+    return solution([3,3,3,2,2,4])
+
+# print(phone_cat_mon())
+
+
+def binary_loop():
+    def solution(s):
+        count = 1
+        zero = 0
+        def get_binary(p):
+            binary_string = ""
+            p = int(p)
+            while p > 0:
+                binary_string = str(p % 2) + binary_string
+                p = p // 2
+
+            return binary_string
+
+        zero += len([x for x in s if x == "0"])
+        s = str(len([x for x in s if x == "1"]))
+        while s != "1":
+            s = get_binary(s)
+            zero += len([x for x in s if x == "0"])
+            s = str(len([x for x in s if x == "1"]))
+            count += 1
+
+
+        return [count, zero]
+
+    return solution("1111111")
+
+# print(binary_loop())
+
+def make_min_value():
+    def solution(A, B):
+        from collections import deque
+        a = deque(sorted(A))
+        b = deque(sorted(B))
+        result = 0
+        while len(a) > 0:
+            result += a.popleft() * b.pop()
+        return result
+
+    return solution([1, 2], [3, 4])
+
+print(make_min_value())
