@@ -702,4 +702,197 @@ def make_min_value():
 
     return solution([1, 2], [3, 4])
 
-print(make_min_value())
+# print(make_min_value())
+
+
+# https://programmers.co.kr/learn/courses/30/lessons/67257
+def maximum():
+    def calculate(x, operand):
+        copy_operand = operand.copy()
+        for i in range(len(copy_operand)):
+            if copy_operand[i] == x:
+                if x == "*":
+                    copy_operand[i + 1] = str(int(copy_operand[i - 1]) * int(copy_operand[i + 1]))
+                elif x == "-":
+                    copy_operand[i + 1] = str(int(copy_operand[i - 1]) - int(copy_operand[i + 1]))
+                else:
+                    copy_operand[i + 1] = str(int(copy_operand[i - 1]) + int(copy_operand[i + 1]))
+                copy_operand[i] = "_"
+                copy_operand[i - 1] = "_"
+        copy_operand = [x for x in copy_operand if x != "_"]
+        return copy_operand
+
+
+
+    def solution(expression):
+        import itertools
+        expression_list = ["*", "-", "+"]
+        operand = []
+        after_expression_index = 0
+        result = []
+
+        for i in range(len(expression)):
+            if expression[i] in expression_list:
+                operand.append(expression[after_expression_index:i])
+                operand.append(expression[i])
+                after_expression_index = i + 1
+
+        operand.append(expression[after_expression_index:])
+
+        expression_priority = list(itertools.permutations(expression_list, 3))
+
+        while expression_priority:
+            priority = expression_priority.pop()
+            copy_operand = operand.copy()
+
+            for x in priority:
+                copy_operand = calculate(x, copy_operand)
+
+            result.append(abs(int(copy_operand[0])))
+        return max(result)
+
+    return solution("100-200*300-500+20")
+
+# print(maximum())
+
+def matrix_multply():
+    def solution(arr1, arr2):
+        col_max = len(arr2[0])
+        row_max = len(arr1)
+        result = [[0] * col_max for _ in range(row_max)]
+
+        for row in range(row_max):
+            for col in range(col_max):
+                for arr_col in range(len(arr1[0])):
+                    result[row][col] += arr1[row][arr_col] * arr2[arr_col][col]
+        return result
+
+    return solution([[1, 2, 3], [4, 5, 6]], [[1, 4], [2, 5], [3, 6]])
+
+# print(matrix_multply())
+
+
+
+def jadenCase():
+    def solution(s):
+        print(s)
+        return ' '.join([''.join([i == 0 and a.upper() or a.lower() for i, a in enumerate(x)]) for x in s.split(" ")])
+    return solution("3people unFollowed me")
+
+# print(jadenCase())
+
+def gcds():
+    def solution(arr):
+        def get_gcd(a, b):
+            normal_a = a
+            normal_b = b
+
+            while normal_a != normal_b:
+                if normal_a > normal_b:
+                    normal_b += b
+                elif normal_a < normal_b:
+                    normal_a += a
+
+            return normal_a
+
+        for i in range(1, len(arr)):
+            arr[i] = get_gcd(arr[i - 1], arr[i])
+
+        return arr[-1]
+
+    return solution([2,6,8,14])
+
+print(gcds())
+
+
+def couple_remove():
+    def solution(s):
+        stack = [s[0]]
+
+        for i in range(1, len(s)):
+            print(stack)
+            if len(stack) == 0:
+                stack.append(s[i])
+            if stack[-1] == s[i]:
+                stack.pop()
+            if stack[-1] != s[i]:
+                stack.append(s[i])
+
+
+        if len(stack) > 0:
+            return 0
+        else:
+            return 1
+
+    return solution("abccaabaa")
+
+# print(couple_remove())
+
+def make_prime():
+    def solution(nums):
+        answer = 0
+        import itertools
+        is_prime_number = [sum(x) for x in itertools.combinations(nums, 3)]
+        def is_prime(num):
+            max_length = int(num ** 0.5) + 1
+            for i in range(2, max_length):
+                if num % i == 0:
+                    return False
+
+            return True
+
+        for n in is_prime_number:
+            if is_prime(n):
+                answer += 1
+
+        return answer
+
+    return solution([1, 2, 3, 4])
+
+# print(make_prime())
+
+
+def teleport_jump():
+    def solution(n):
+        jump = 0
+        while n > 0:
+            if n % 2:
+                jump += 1
+            n = n //2
+
+        return jump
+    return solution(5)
+
+# print(teleport_jump())
+
+
+def english_play():
+    def solution(n, words):
+        person_cycle = [0] * (n)
+        person_number = 0
+        last_word = words[0][0]
+        for i in range(len(words)):
+            person_number = i % n
+            person_cycle[person_number] += 1
+            if last_word != words[i][0] or words[i] in words[:i] or len(words[i]) == 1:
+                return [person_number + 1, person_cycle[person_number]]
+            last_word = words[i][-1]
+
+
+        return [0, 0]
+
+    return solution(3, 	["tank", "kick", "know", "wheel", "land", "dream", "mother", "robot", "tank"])
+# print(english_play())
+
+
+def sieve_of_eratos(n):
+    sieve = [True] * (n + 1)
+    max_length = int(n ** 0.5) + 1
+    for i in range(2, max_length):
+        if sieve[i]:
+            for j in range(i + i, n + 1, i):
+                sieve[j] = False
+
+    return [i for i in range(2, len(sieve)) if sieve[i] != False]
+
+print(sieve_of_eratos(100))
