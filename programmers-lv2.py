@@ -802,7 +802,7 @@ def gcds():
 
     return solution([2,6,8,14])
 
-print(gcds())
+# print(gcds())
 
 
 def couple_remove():
@@ -895,4 +895,204 @@ def sieve_of_eratos(n):
 
     return [i for i in range(2, len(sieve)) if sieve[i] != False]
 
-print(sieve_of_eratos(100))
+# print(sieve_of_eratos(100))
+
+def news_cluster():
+    def solution(str1, str2):
+        arr1 = [(str1[i - 1] + str1[i]).lower() for i in range(1, len(str1)) if str1[i].isalpha() and str1[i - 1].isalpha()]
+        arr2 = [(str2[i - 1] + str2[i]).lower() for i in range(1, len(str2)) if str2[i].isalpha() and str2[i - 1].isalpha()]
+        same = {}
+        diff = {}
+
+        if len(arr1) > len(arr2):
+            arr1, arr2 = arr2, arr1
+
+        for i in range(len(arr1)):
+            for j in range(len(arr2)):
+                if arr1[i] == arr2[j] and arr1[i] != "":
+                    if arr1[i] in same:
+                        same[arr1[i]] += 1
+                        arr1[i] = ""
+                        arr2[j] = ""
+                    else:
+                        same[arr1[i]] = 1
+                        arr1[i] = ""
+                        arr2[j] = ""
+
+        for i in range(len(arr1)):
+            if arr1[i] != "":
+                if arr1[i] in diff:
+                    diff[arr1[i]] += 1
+                else:
+                    diff[arr1[i]] = 1
+
+        for i in range(len(arr2)):
+            if arr2[i] != "":
+                if arr2[i] in diff:
+                    diff[arr2[i]] += 1
+                else:
+                    diff[arr2[i]] = 1
+
+        same_length = 0
+        diff_length = 0
+
+        for key in same:
+            same_length += same[key]
+
+        for key in diff:
+            diff_length += diff[key]
+
+        if diff_length == same_length and same_length == 0:
+            return 65536
+
+        return int(65536 * (same_length / (same_length + diff_length)))
+    return solution("aa1+aa2", "AAAA12")
+
+# print(news_cluster())
+
+
+def frends_four_block():
+    def solution(m, n, board):
+        answer = 0
+        def fung(m, n, board):
+            result = 0
+            flag = False
+            index_list = []
+            for row in range(1, m):
+                for col in range(1, n):
+                    if board[row][col] != "0":
+                        if board[row][col] == board[row - 1][col] and board[row - 1][col] == board[row][col - 1] and board[row][col - 1] == board[row - 1][col - 1]:
+                            index_list.append((row, col))
+                            flag = True
+
+            if flag:
+                for row, col in index_list:
+                    if board[row][col] != "0":
+                        result += 1
+                        board[row][col] = "0"
+                    if board[row - 1][col] != "0":
+                        result += 1
+                        board[row - 1][col] = "0"
+                    if board[row][col - 1] != "0":
+                        result += 1
+                        board[row][col - 1] = "0"
+                    if board[row - 1][col - 1] != "0":
+                        result += 1
+                        board[row - 1][col - 1] = "0"
+
+                for col in range(n):
+                    temp = []
+                    for row in range(m - 1, -1, -1):
+                        temp.append(board[row][col])
+
+                    temp = [x for x in temp if x != "0"]
+
+                    if len(temp) < m:
+                        temp.extend(["0"] * (m - len(temp)))
+
+                    for row in range(m - 1, -1, -1):
+                        board[row][col] = temp[m - row - 1]
+
+            return (flag, result)
+
+        board = [[a for a in x] for x in board]
+
+        while True:
+            flag, temp = fung(m, n, board)
+            answer += temp
+            if not flag:
+                break
+
+        return answer
+
+    return solution(4, 5, ["CCBDE", "AAADE", "AAABF", "CCBBF"])
+
+# print(frends_four_block())
+
+def casheSize():
+    def solution(size, cities):
+        import collections
+        cashes = []
+        answer = 0
+        cities = collections.deque([x.lower() for x in cities])
+
+        while len(cities) > 0:
+            if size == 0:
+                return len(cities) * 5
+            city = cities.popleft()
+            if len(cashes) > 0:
+                if city in cashes:
+                    if len(cashes) == size:
+                        cashes.pop(cashes.index(city))
+                    answer -= 4
+                else:
+                    if len(cashes) == size:
+                        cashes.pop(0)
+
+            answer += 5
+            cashes.append(city)
+
+
+        return answer
+
+    return solution(3, ["Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul"])
+
+print(casheSize())
+
+
+def open_chat():
+    def solution(record):
+        dic = {}
+        str_list = []
+        for i in range(len(record)):
+            command = record[i].split(" ")
+            action = command[0]
+            if action == "Enter":
+                uid = command[1]
+                name = command[2]
+                dic[uid] = name
+                str_list.append(uid + "님이 들어왔습니다.")
+            elif action == "Leave":
+                uid = command[1]
+                str_list.append(uid + "님이 나갔습니다.")
+            elif action == "Change":
+                uid = command[1]
+                name = command[2]
+                dic[uid] = name
+
+        for i in range(len(str_list)):
+            arr = str_list[i].split("님이")
+            str_list[i] = dic[arr[0]] + "님이" + arr[1]
+
+        return str_list
+
+    return solution(["Enter uid1234 Muzi", "Enter uid4567 Prodo","Leave uid1234","Enter uid1234 Prodo","Change uid4567 Ryan"])
+
+# print(open_chat())
+
+def candidate_key():
+    def solution(relation):
+        import itertools
+        stack = []
+        relation_reverse = []
+        for col in range(len(relation[0])):
+            temp = []
+            for row in range(len(relation)):
+                temp.append(relation[row][col])
+            relation_reverse.append(temp)
+
+        while stack:
+            compare = []
+            for s in stack:
+                relation_reverse[s]
+
+
+
+
+
+
+        return
+
+    return solution([["100","ryan","music","2"],["200","apeach","math","2"],["300","tube","computer","3"],["400","con","computer","4"],["500","muzi","music","3"],["600","apeach","music","2"]])
+
+print(candidate_key())
