@@ -583,4 +583,170 @@ def connect_island():
 
     return solution(4, [[0,1,1],[0,2,2],[1,2,5],[1,3,1],[2,3,8]])
 
-print(connect_island())
+# print(connect_island())
+
+
+def camera():
+    def solution(routes):
+        routes.sort(key= lambda x: x[1], reverse= True)
+        count = 0
+        while routes:
+            count += 1
+            i, o = routes.pop()
+            passes = []
+
+            for j in range(len(routes)):
+                if routes[j][0] <= o <= routes[j][1]:
+                    passes.append(j)
+
+            routes = [routes[i] for i in range(len(routes)) if i not in passes]
+
+        return count
+
+    # return solution([[2, 2],[0, 1],[-10,9]])
+    return solution([[-20,15], [-14,-5], [-18,-13], [-5,-3]])
+
+# print(camera())
+
+def hanoi():
+    top_of_hanoi = {
+        1:[1, 2, 3],
+        2:[],
+        3:[],
+    }
+    def solution(n, start, goal):
+        def recrusive_solution(n, start, goal):
+                if n == 1:
+                    print(top_of_hanoi)
+                    top_of_hanoi[goal].append(top_of_hanoi[start].pop())
+                    return
+
+                recrusive_solution(n - 1, start,  6 - start - goal)
+
+                recrusive_solution(1, start, goal)
+
+                recrusive_solution(n - 1,  6 - start - goal, goal)
+
+        recrusive_solution(n, start, goal)
+        print(top_of_hanoi)
+
+    return solution(3, 1, 2)
+
+
+# print(hanoi())
+
+
+def merge_sort():
+    arr = [3, 5, 4, 2, 1]
+    def merge(arr, start, mid, end):
+        new_arr = []
+        i = start
+        j = mid + 1
+
+        while (i <= mid and j <= end):
+            if arr[i] > arr[j]:
+                new_arr.append(arr[j])
+                j += 1
+            else:
+                new_arr.append(arr[i])
+                i += 1
+
+        if i <= mid:
+            new_arr.extend(arr[i : mid + 1])
+        else:
+            new_arr.extend(arr[j: end + 1])
+
+        for k in range(start, end + 1):
+            arr[k] = new_arr[k - start]
+
+
+    def merge_sort_func(arr, start, end):
+        if start >= end:
+            return
+        mid = (start + end) // 2
+        merge_sort_func(arr, start, mid)
+        merge_sort_func(arr, mid + 1, end)
+        merge(arr, start, mid, end)
+
+    merge_sort_func(arr, 0, 4)
+    return arr
+
+# print(merge_sort())
+def quick_sort2(arr, start, end):
+    if start >= end:
+        return
+
+    def partition(arr, start, end):
+        pivot = arr[start]
+        i = start + 1
+        j = end
+
+        while i <= j:
+            while arr[i] < pivot:
+                i += 1
+                if i >= len(arr):
+                    break
+
+            while arr[j] > pivot:
+                j -= 1
+                if j <= 0:
+                    break
+
+            if i < j:
+                arr[i], arr[j] = arr[j], arr[i]
+
+        arr[start], arr[j] = arr[j], arr[start]
+
+        return j
+
+    partition_point = partition(arr, start, end)
+    quick_sort2(arr, start, partition_point - 1)
+    quick_sort2(arr, partition_point + 1, end)
+
+    return arr
+
+# print(quick_sort2([5, 32, 3, 4, 51, 2], 0, 5))
+
+def quick_sort(arr):
+    if arr:
+        pivot = arr[0]
+        space = arr[1:]
+
+        left = [x for x in space if x < pivot]
+        right = [x for x in space if x > pivot]
+
+        return quick_sort(left) + [pivot] + quick_sort(right)
+
+    else:
+        return []
+
+
+# print(quick_sort([5,32,3,4,51,2]))
+
+
+def immigration():
+    def solution(n, times):
+        left = 1
+        right = max(times) * n
+        answer = 0
+
+        while left <= right:
+            mid = (left + right) // 2
+
+            count = 0
+            for time in times:
+                count += (mid // time)
+                if count >= n:
+                    break
+
+            if count >= n:
+                answer = mid
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return answer
+
+    return solution(6, [7, 10])
+
+print(immigration())
