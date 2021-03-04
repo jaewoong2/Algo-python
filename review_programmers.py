@@ -720,7 +720,6 @@ def quick_sort(arr):
     else:
         return []
 
-
 # print(quick_sort([5,32,3,4,51,2]))
 
 
