@@ -310,4 +310,65 @@ def very_far_nodes():
 
     return solution(6, [[3, 6], [4, 3], [3, 2], [1, 3], [1, 2], [2, 4], [5, 2]])
 
-print(very_far_nodes())
+# print(very_far_nodes())
+
+def rank():
+    def solution(n, results):
+        matrix = [[0 for _ in range(n)] for _ in range(n)]
+        results = [[x - 1, y - 1] for x, y in results]
+
+
+        for w, l in results:
+            matrix[w][l] = 1
+            matrix[l][w] = -1
+
+        for k in range(n):
+            for row in range(n):
+                for col in range(n):
+                    if row != col:
+                        if matrix[row][k] == 1 and matrix[k][col] == 1:
+                            matrix[row][col] = 1
+                            matrix[col][row] = -1
+                        if matrix[row][k] == -1 and matrix[k][col] == -1:
+                            matrix[col][row] = 1
+                            matrix[row][col] = -1
+
+        for i in range(len(matrix)):
+            print(matrix[i])
+
+        return len([y for y in [len([x for x in matrix[i] if x != 0]) for i in range(len(matrix))] if y == n - 1])
+
+
+    return solution(5, [[4, 3], [4, 2], [3, 2], [1, 2], [2, 5]])
+
+# print(rank())
+
+def very_long_palindrome():
+    def solution(s):
+        max_palindrome = 0
+
+        for i in range(len(s)):
+            # if max_palindrome[i - 1] == len(s_array[i - 1:]):
+            #     break
+            array = s[i:]
+
+            if len(array) < max_palindrome:
+                break
+
+            while array:
+                if len(array) < max_palindrome:
+                    break
+
+                if array == array[::-1]:
+                    max_palindrome = len(array)
+                    break
+                else:
+                    array = array[:len(array) - 1]
+
+
+
+        return (max_palindrome)
+
+    return solution("abacde")
+
+print(very_long_palindrome())
