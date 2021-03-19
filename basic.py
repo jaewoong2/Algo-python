@@ -371,4 +371,190 @@ def very_long_palindrome():
 
     return solution("abacde")
 
-print(very_long_palindrome())
+# print(very_long_palindrome())
+
+def change_the_money():
+    def solution(n, monies):
+        dp = [0] * (n + 1)
+        dp[0] = 1
+
+        for i in range(len(monies)):
+            for j in range(monies[i], n +1):
+                dp[j] = dp[j] + dp[j - monies[i]]
+
+        return dp[n] % 1000000007
+    return solution(5, [1,2,5])
+
+# print(change_the_money())
+
+def long_jump():
+    def solution(n):
+        dp = [0 for _ in range(n + 1)]
+        dp[1] = 1
+        dp[2] = 2
+
+        for i in range(3, n + 1):
+            dp[i] += dp[i - 1] + dp[i - 2]
+
+        return dp[n]
+
+    return solution(1)
+
+# print(long_jump())
+
+def pirodo():
+    def solution(works, n):
+        import heapq
+        works = list([-x for x in works])
+
+        heapq.heapify(works)
+
+        while n > 0:
+            v = heapq.heappop(works)
+
+            n -=1
+            v += 1
+
+            heapq.heappush(works, v)
+
+        return sum([(-x) ** 2 for x in works])
+
+    return solution([1, 1], 3)
+
+# print(pirodo())
+
+def the_best_set():
+    def solution(n, s):
+        mid = s // n
+        if mid == 0:
+            return [-1]
+
+        array = [mid] * n
+        total = sum(array)
+        diff = s - total
+        
+        for i in range(diff):
+            array[i % n] += 1
+
+        return sorted(array)
+
+    return solution(2, 9)
+
+# print(the_best_set())
+
+def hanoi():
+    def solution(n):
+        answer = []
+        def recrusive(start, target, empty, array):
+            if len(array) == 1:
+                answer.append([start, target])
+                return
+
+            recrusive(start, empty, target, array[:-1])
+            recrusive(start, target, empty, [array[-1]])
+            recrusive(empty, target, start, array[:-1])
+
+        recrusive(1, 3, 2, [i for i in range(n, 0, -1)])
+        return answer
+    return solution(2)
+# print(hanoi())
+
+def how_to_queue():
+    def i_permutation(n, arr, r, limit):
+        import collections
+        stack = collections.deque([[i] for i in range(n)])
+        result = []
+
+        if r == 1:
+            return [x for x in arr]
+
+        while stack:
+            if len(result) == limit:
+                break
+
+            curr = stack.popleft()
+            for i in range(n):
+                if i not in curr:
+                    temp = curr + [i]
+                    if len(temp) == r:
+                        elements = []
+                        for idx in temp:
+                            elements.append(arr[idx])
+                        result.append(elements)
+                    else:
+                        stack.append(temp)
+
+        return result
+
+    def solution(n, k):
+        import itertools
+        array = [i + 1 for i in range(n)]
+        answer = list(itertools.permutations(array, n))
+        # answer = list(i_permutation(len(array), array, n, k))
+        return answer[-1]
+    return solution(3, 5)
+
+# print(how_to_queue())
+
+def the_biggest_box():
+    def solution(board):
+        row_length = len(board)
+        col_length = len(board[0])
+        result = 0
+
+        for row in range(1, row_length):
+            for col in range(1, col_length):
+                if board[row][col] > 0:
+                    across = board[row - 1][col - 1]
+                    left = board[row][col - 1]
+                    up = board[row - 1][col]
+                    if across > 0 and left > 0 and up > 0:
+                        board[row][col] = min(across, left, up) + 1
+                        result = max(board[row][col], result)
+
+        return result ** 2
+
+    return solution([[0,1,1,1],[1,1,1,1],[1,1,1,1],[0,0,1,0]])
+
+
+# print(the_biggest_box())
+
+
+def traffic():
+    def solution(lines: list):
+        new_lines = [(
+            (float(x.split(' ')[1].split(':')[0]) * 3600 +
+                float(x.split(' ')[1].split(':')[1]) * 60 +
+                float(x.split(' ')[1].split(':')[2])) * 1000 - float(x.split(' ')[2][:-1]) * 1000,
+
+            float(x.split(' ')[1].split(':')[0]) * 3600 +
+                  float(x.split(' ')[1].split(':')[1]) * 60 +
+                  float(x.split(' ')[1].split(':')[2])
+             ) for x in lines]
+
+        new_lines = [(new_lines[i][0] + 1, new_lines[i][1] * 1000) for i in range(len(new_lines))]
+
+        count = 0
+        for j in range(len(new_lines)):
+            temp_start = set()
+            temp_end = set()
+            s = new_lines[j]
+
+            for i in range(len(new_lines)):
+                if (new_lines[i][0] <= s[1] and (new_lines[i][1] > s[1] + 1000)) \
+                        or (s[1] <= new_lines[i][0] < s[1] + 1000) \
+                        or (s[1] <= new_lines[i][1] < s[1] + 1000):
+                    temp_end.add(i)
+
+                elif (new_lines[i][0] <= s[0] and (new_lines[i][1] > s[0] + 1000)) \
+                        or (s[0] <= new_lines[i][0] < s[0] + 1000) \
+                        or (s[0] <= new_lines[i][1] < s[0] + 1000):
+                    temp_start.add(i)
+
+            print(s)
+            count = max(count, len(temp_start), len(temp_end))
+
+        return count
+
+    return solution(["2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s"])
+print(traffic())
