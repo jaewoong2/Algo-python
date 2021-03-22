@@ -557,4 +557,115 @@ def traffic():
         return count
 
     return solution(["2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s"])
-print(traffic())
+# print(traffic())
+
+def network():
+    def solution(computers):
+        graph = {node: [i for i in range(len(computers[node])) if node != i and computers[node][i] == 1] for node in range(len(computers))}
+        stack = [0]
+        visit = [False] * len(computers)
+        visit[0] = True
+        num_of_network = 1
+
+        while stack:
+            v = stack.pop()
+
+            for node in graph[v]:
+                if not visit[node]:
+                    stack.append(node)
+                    visit[node] = True
+
+            for node in graph:
+                if not visit[node] and len(stack) == 0:
+                    num_of_network += 1
+                    stack.append(node)
+                    visit[node] = True
+                    break
+
+        return num_of_network
+
+    return solution([[1, 1, 0], [1, 1, 0], [0, 0, 1]])
+# print(network())
+
+
+def disc_controller():
+    import heapq
+    def solution(jobs):
+        jobs.sort(reverse= True)
+        length = len(jobs)
+        result = 0
+        time = 0
+        tasks = []
+        while jobs or tasks:
+            if len(tasks) == 0:
+                jobs.sort(reverse= True)
+                job = jobs.pop()
+                time = job[0]
+                heapq.heappush(tasks, [job[1], job[0]])
+
+            else:
+                t, n = heapq.heappop(tasks)
+                time += t
+
+                temp = [i for i in range(len(jobs)) if jobs[i][0] <= time]
+
+                for num in temp:
+                    heapq.heappush(tasks, [jobs[num][1], jobs[num][0]])
+
+                jobs = [jobs[i] for i in range(len(jobs)) if jobs[i][0] > time]
+
+                result += (time - n)
+
+        return result // length
+
+
+#     print(solution([[0, 3], [1, 9], [2, 6]]), 9)
+#     print(solution([[1, 10], [3, 3], [10, 3]]), 9)
+#     print(solution( [[0, 10], [4, 10], [5, 11], [15, 2]]), 15)
+#     print(solution([[0, 10]]), 10)
+#     print(solution([[0, 3], [1, 9], [2, 6], [4, 3]]), 9)
+#     print(solution( [[0, 1], [1, 2], [500, 6]]), 3)
+#     # return solution([[0, 3], [1, 9], [2, 6]])
+# print(disc_controller())
+
+
+def bad_users():
+
+    def solution(user_ids, banned_ids):
+        results = []
+
+        for banned_id in banned_ids:
+            temp = []
+            for user_id in user_ids:
+                banned_id_length = len(banned_id)
+                if banned_id_length == len(user_id):
+                    flag = True
+                    for idx in range(banned_id_length):
+                        if banned_id[idx] != user_id[idx] and banned_id[idx] != '*':
+                            flag = False
+                            break
+                    if flag:
+                        temp.append(user_id)
+
+            results.append(temp)
+
+        ans = []
+        def dfs(answers, level):
+            if level == len(banned_ids):
+                ans.append(answers)
+                return
+
+            for value in results[level]:
+                if value not in answers:
+                    answers.append(value)
+                    dfs(answers[:], level + 1)
+                    answers.pop()
+
+        dfs([], 0)
+        ans = set(''.join(sorted(x)) for x in ans)
+
+
+        return len(ans)
+
+    return solution(["frodo", "fradi", "crodo", "abc123", "frodoc"], ["fr*d*", "*rodo", "******", "******"])
+print(bad_users())
