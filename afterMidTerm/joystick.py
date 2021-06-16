@@ -33,12 +33,6 @@ def solution(name):
         now = idx
         total += left_or_right
 
-        print(up_or_down, 'up_or_down')
-        print(left_or_right, 'left_or_right')
-        print(completed, 'completed')
-        print('--------------------------------')
-
-
     return total
 
 print(solution("AAAABBB"))
