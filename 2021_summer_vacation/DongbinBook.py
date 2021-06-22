@@ -227,4 +227,43 @@ def development_game(n, m, position, map):
         position = canMove(position)
     return len(cash)
 
-print(development_game(4, 4, [1, 1, 0], [[1,1,1,1], [1,0,0,1], [1,1,0,1], [1,1,1,1]]))
+# print(development_game(4, 4, [1, 1, 0], [[1,1,1,1], [1,0,0,1], [1,1,0,1], [1,1,1,1]]))
+
+
+# 떡볶이 떡 만들기 (p.201 이진탐색)
+
+def dduckBbooki(n, m, arr):
+    start = 0
+    end = arr[n - 1]
+    result = 0
+
+    while start <= end:
+        mid = (start + end) // 2
+
+        total = sum([x - mid for x in arr if x > mid])
+
+        if total > m:
+            start = mid + 1
+
+        elif total < m:
+            end = mid - 1
+        else:
+            result += mid
+            break
+
+    return result
+
+# print(dduckBbooki(4, 6, [19, 15, 10, 17]))
+
+
+def Fibonacci_wrpaeer(n):
+    dp = { 1: 1, 2: 1 }
+    def Fibonacci(n):
+        if n in dp:
+            return dp[n]
+        if n > 2:
+            dp[n] =  Fibonacci(n - 1) + Fibonacci(n - 2)
+        return dp[n]
+    return Fibonacci(n)
+
+print(Fibonacci_wrpaeer(3))
