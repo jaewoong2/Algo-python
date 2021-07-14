@@ -266,4 +266,143 @@ def Fibonacci_wrpaeer(n):
         return dp[n]
     return Fibonacci(n)
 
-print(Fibonacci_wrpaeer(3))
+# print(Fibonacci_wrpaeer(3))
+
+def money_change(n, m, moneys):
+    dp = {x: float('inf') for x in range(m + 1)}
+    for money in moneys:
+        dp[money] = 1
+
+    def recursive(pay):
+        if pay not in dp:
+            return 0
+
+        if dp[pay] != float('inf'):
+            return dp[pay]
+
+        for money in moneys:
+            if recursive(pay - money) != 0:
+                dp[pay] = min(dp[pay], recursive(pay - money) + 1)
+
+        return dp[pay]
+
+    return recursive(m) == float('inf') and -1 or recursive(m)
+
+
+# print(money_change(3, 4, [3, 5, 7]))
+
+
+def dijkstra(graph, start):
+    costs = { node: float('inf') for node in graph }
+    costs[start] = 0
+    visited = [start]
+    for node in graph[start]:
+        costs[node] = graph[start][node]
+
+    while len(visited) < len(graph):
+        minimum_cost, minimum_node = min([[costs[x], x] for x in costs if x not in visited], key=lambda x: x[0])
+        visited.append(minimum_node)
+
+        for node in graph[minimum_node]:
+            costs[node] = min(minimum_cost + graph[minimum_node][node], costs[node])
+
+    return costs
+
+graph = {
+    1: {2: 2, 3: 5, 4: 1},
+    2: {3: 3, 4: 2},
+    3: {2: 3, 6: 5},
+    4: {3: 3, 5: 1},
+    5: {3: 1, 6: 2},
+    6: {}
+}
+
+# print(dijkstra(graph, 1))
+
+
+def Floyd(graph):
+    new_graph = {x: { y: float('inf') for y in graph } for x in graph}
+
+    for x in graph:
+        for y in graph[x]:
+            new_graph[x][x] = 0
+            new_graph[x][y] = graph[x][y]
+            new_graph[y][x] = graph[x][y]
+
+
+    for k in new_graph:
+        for i in new_graph:
+            for j in new_graph[i]:
+                new_graph[i][j] = min(new_graph[i][k] + new_graph[k][j], new_graph[i][j])
+
+    return new_graph
+
+
+# print(Floyd(graph))
+
+
+
+def future_city(n, x, k, graph):
+    table = {node + 1: {vertex + 1: float('inf') for vertex in range(n)} for node in range(n)}
+
+    for node in range(n):
+        for vertex in range(n):
+            if node + 1 in graph:
+                if vertex + 1 in graph[node + 1]:
+                    table[node + 1][vertex + 1] = graph[node + 1][vertex + 1]
+                    table[vertex + 1][node + 1] = graph[node + 1][vertex + 1]
+
+    for k in graph:
+        for i in graph:
+            for j in graph:
+                table[i][j] = min(table[i][j], table[i][k] + table[k][j])
+
+    return table[1][k] + table[k][x]
+
+# print(future_city(5, 4, 5, {1: {2: 1, 3: 1, 4: 1}, 2: {4: 1}, 3: {4: 1, 5: 1}, 4: {5: 1} }))
+
+
+def time_list():
+    import time
+    NUM = 300000
+    list1 = [x for x in range(NUM)]
+    list2 = [x for x in range(NUM)]
+
+    start_1 = time.time()
+    list1 = list1[:(NUM//2)]
+    print(time.time() - start_1, '[:]')
+
+    start_2 = time.time()
+    for i in range(NUM//2):
+        list2.pop()
+
+    print(time.time() - start_2, 'pop')
+    return
+# time_list()
+
+
+def doubleQueue(operation):
+    queue = []
+    while operation:
+        word, value = operation.pop(0).split(" ")
+        value = int(value)
+        if word == 'I':
+            if len(queue) == 0:
+                queue.append(value)
+            else:
+                if queue[-1] < value:
+                    queue.append(value)
+                else:
+                    for i in range(len(queue)):
+                        if queue[i] > value:
+                            queue = [queue[:i] + value + queue[i:]]
+        else:
+            if value == "1":
+                queue.pop()
+            else:
+                queue.pop(0)
+
+    return queue and [queue[-1], queue[0]] or [0, 0]
+
+print(doubleQueue(["I 7","I 5","I -5","D -1"]))
+
