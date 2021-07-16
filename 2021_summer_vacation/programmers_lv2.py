@@ -180,7 +180,53 @@ def rotate_matrix(row, col, queries):
 
     # return result
 
+# print(rotate_matrix(6, 6, [[2,2,5,4],[3,3,6,6],[5,1,6,3]]))
 
-print(rotate_matrix(6, 6, [[2,2,5,4],[3,3,6,6],[5,1,6,3]]))
+
+# 프로그래머스 lv2 구명보트
+def boat_for_life(people: List[int], limit: int):
+    people.sort()
+    start, end = 0, len(people) - 1
+    boat = 0
+
+    while start <= end:
+        pivot = people[end]
+        if pivot + people[start] <= limit:
+            start += 1
+
+        end -= 1
+        boat += 1
+
+    return boat
+
+# print(boat_for_life([70, 80, 50], 100))
+
+# n진수 게임 https://programmers.co.kr/learn/courses/30/lessons/17687
+def game_of_n(n: int, t: int, m: int, p: int):
+    # n: 진수, t: 구해야하는 갯수, m: 참가인원, p: 순서
+    num_dict = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+    numbers = []
+    for num in range(1001):
+        numbers.append(num)
+
+    for i, number in enumerate(numbers):
+        temp = ''
+        while number >= n:
+            remainder = number % n
+            number = number // n
+            temp = num_dict[remainder] + temp
+        temp = num_dict[number] + temp
+        numbers[i] = temp
+
+    str_numbers = ''.join(numbers)
+
+    result = ''
+    idx = p - 1
+    while len(result) < t:
+        result += str_numbers[idx]
+        idx += m
 
 
+    return ''.join(result)
+
+print(game_of_n(16, 16, 2, 1))
