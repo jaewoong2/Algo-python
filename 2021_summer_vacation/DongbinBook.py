@@ -362,47 +362,108 @@ def future_city(n, x, k, graph):
 # print(future_city(5, 4, 5, {1: {2: 1, 3: 1, 4: 1}, 2: {4: 1}, 3: {4: 1, 5: 1}, 4: {5: 1} }))
 
 
-def time_list():
-    import time
-    NUM = 300000
-    list1 = [x for x in range(NUM)]
-    list2 = [x for x in range(NUM)]
+# 미래도시, 플로이드 워셜 알고리즘 사용
+def future_city_2(n, x, k, graph):
+    matrix = {i: {j: float('inf') for j in range(1, n + 1)} for i in range(1, n + 1)}
 
-    start_1 = time.time()
-    list1 = list1[:(NUM//2)]
-    print(time.time() - start_1, '[:]')
+    for node in graph:
+        for edge in graph[node]:
+            matrix[node][edge] = 1
+            matrix[edge][node] = 1
 
-    start_2 = time.time()
-    for i in range(NUM//2):
-        list2.pop()
+    for pivot in matrix:
+        for node in matrix:
+            for edge in matrix[node]:
+                matrix[node][edge] = min(matrix[node][edge], matrix[node][pivot] + matrix[pivot][edge])
 
-    print(time.time() - start_2, 'pop')
-    return
-# time_list()
+    return matrix[1][k] + matrix[k][x]
 
 
-def doubleQueue(operation):
-    queue = []
-    while operation:
-        word, value = operation.pop(0).split(" ")
-        value = int(value)
-        if word == 'I':
-            if len(queue) == 0:
-                queue.append(value)
-            else:
-                if queue[-1] < value:
-                    queue.append(value)
-                else:
-                    for i in range(len(queue)):
-                        if queue[i] > value:
-                            queue = [queue[:i] + value + queue[i:]]
+# print(future_city_2(5, 4, 5, {1: {2: 1, 3: 1, 4: 1}, 2: {4: 1}, 3: {4: 1, 5: 1}, 4: {5: 1} }))
+
+# 전보
+def telegram(n, m, c, graph):
+    visited = []
+    stack = [(c, 0)]
+    max_time = 0
+
+    while stack:
+        node, cost = stack.pop()
+
+        visited.append(node)
+        max_time = max(cost, max_time)
+
+        if node in graph:
+            for v in graph[node]:
+                if v not in visited:
+                    stack.append((v, cost + graph[node][v]))
+
+    return [len(visited) - 1, max_time]
+
+
+# print(telegram(3, 2, 1, {1: {2: 4, 3: 2}}))
+
+# 서로소 집합
+class disjoint_set():
+    def __init__(self, n):
+        self.U = []
+        # n개의 node 생성 (index ==> node 의 번호)
+        for i in range(n + 1):
+            self.U.append(i)
+
+    # U[nodeIndex] ==> node 의 parent
+    # U[nodeIndex] == nodeIndex 같으면 본인이 Root Parent
+    def find(self, i):
+        j = i
+        while self.U[j] != j:
+            j = self.U[j]
+        return j
+
+    def equal(self, p, q):
+        if p == q:
+            return True
+        return False
+
+    # p, q 를 Union ==> 더 작은 값이 큰 값의 부모가 됨
+    def union(self, p, q):
+        parent_p = self.find(p)
+        parent_q = self.find(q)
+
+        if parent_p < parent_q:
+            self.U[parent_q] = parent_p
         else:
-            if value == "1":
-                queue.pop()
-            else:
-                queue.pop(0)
+            self.U[parent_p] = parent_q
 
-    return queue and [queue[-1], queue[0]] or [0, 0]
 
-print(doubleQueue(["I 7","I 5","I -5","D -1"]))
+def disjointExample():
+    dis_joint_set = disjoint_set(6)
+    dis_joint_set.union(1, 4)
+    dis_joint_set.union(2, 3)
+    dis_joint_set.union(2, 4)
+    dis_joint_set.union(5, 6)
 
+    for i in range(1, 7):
+        print(i, '번 의 부모 ==>', dis_joint_set.find(i))
+
+
+# print(disjointExample())
+
+# 크루스칼 알고리즘 (서로소 집합 사용)(
+def kruskalAlgorithm(edges):
+    disJ_set = disjoint_set(7)
+    edges = sorted(edges, key=lambda x: x[2])
+    total = 0
+
+    for edge in edges:
+        a, b, cost = edge
+        parent_a = disJ_set.find(a)
+        parent_b = disJ_set.find(b)
+
+        if parent_a != parent_b:
+            disJ_set.union(a, b)
+            total += cost
+
+    return total
+
+
+print(kruskalAlgorithm([[1, 2, 29], [1, 5, 75], [2, 3, 35], [2, 6, 34], [3, 4, 7], [4, 6, 23], [4, 7, 13], [5, 6, 53], [6, 7, 25]]))
