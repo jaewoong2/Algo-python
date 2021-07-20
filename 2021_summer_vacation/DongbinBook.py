@@ -466,4 +466,147 @@ def kruskalAlgorithm(edges):
     return total
 
 
-print(kruskalAlgorithm([[1, 2, 29], [1, 5, 75], [2, 3, 35], [2, 6, 34], [3, 4, 7], [4, 6, 23], [4, 7, 13], [5, 6, 53], [6, 7, 25]]))
+# print(kruskalAlgorithm([[1, 2, 29], [1, 5, 75], [2, 3, 35], [2, 6, 34], [3, 4, 7], [4, 6, 23], [4, 7, 13], [5, 6, 53], [6, 7, 25]]))
+
+# 위상정렬 (in edge ==> 0 and visited 추가, 해당 노드 제거 ==> 해당 노드가 접근하는 간선 제거 (in edge 1을 줄인다))
+def topologySort(vertex, edge, graph):
+    in_edge = [0 for _ in range(vertex + 1)]
+    queue = []
+    visited = []
+
+    for n in range(1, vertex + 1):
+        for v in graph:
+            if n in graph[v]:
+                in_edge[n] += 1
+
+    for i in range(1, vertex + 1):
+        if in_edge[i] == 0:
+            visited.append(i)
+            queue.append(i)
+
+    while queue:
+        node = queue.pop(0)
+
+        if node in graph:
+            for i in graph[node]:
+                in_edge[i] -= 1
+                if in_edge[i] == 0 and i not in visited:
+                    visited.append(i)
+                    queue.append(i)
+
+    return visited
+
+# print(topologySort(7, 8, {1: [2, 5], 2: [3, 6], 3: [4], 4: [7], 5: [6], 6: [4]}))
+
+# 팀 결성
+def team_making(n, commands):
+    students = {i: i for i in range(n + 1)}
+    result = []
+    def find(student):
+        if student != students[student]:
+            return find(students[student])
+        return student
+
+    def union(a, b):
+        a_team = find(a)
+        b_team = find(b)
+
+        if a_team > b_team:
+            students[a_team] = b_team
+        else:
+            students[b_team] = a_team
+
+    for cmd in commands:
+        c, a, b = cmd
+        if c == 0:
+            union(a, b)
+        else:
+            if find(a) == find(b):
+                result.append('YES')
+            else:
+                result.append('No')
+
+    return result
+
+# print(team_making(7, [[0, 1, 3], [1, 1, 7], [0, 7, 6], [1, 7, 1], [0, 3, 7], [0, 4, 2], [0, 1, 1], [1, 1, 1]]))
+
+
+# 도시 분활 계획
+def divide_city_plan(n, m, graph):
+
+    def find(a, parent):
+        if a != parent[a]:
+            return find(parent[a], parent)
+        return parent[a]
+
+    def union(a, b, parent):
+        parent_a = find(a, parent)
+        parent_b = find(b, parent)
+
+        if parent_a < parent_b:
+            parent[parent_b] = parent_a
+        else:
+            parent[parent_a] = parent_b
+
+    def kruskal(graph):
+        max_cost = 0
+        cities = {i: i for i in range(1, n + 1)}
+        sorted_graph = []
+        result = 0
+
+        for node in graph:
+            for vertex in graph[node]:
+                sorted_graph.append([node, vertex, graph[node][vertex]])
+
+        sorted_graph.sort(key= lambda x: x[2])
+
+        for v in sorted_graph:
+            a, b, cost = v
+            if find(a, cities) != find(b, cities):
+                union(a, b, cities)
+                result += cost
+                max_cost = cost
+
+        return result - max_cost
+
+
+    return kruskal(graph)
+
+
+# print(divide_city_plan(7, 12, {
+#     1: {2: 3, 3: 2, 6: 2},
+#     2: {5: 2},
+#     3: {2: 1, 4: 4},
+#     4: {5: 3},
+#     5: {1: 5},
+#     6: {4: 1, 5: 3, 7: 4},
+#     7: {3: 6},
+# }))
+
+def curriculum(n, lectures):
+    times = {i + 1: lecture[0] for i, lecture in enumerate(lectures)}
+    prerequisites = {i + 1: [x for x in lecture[1]] for i, lecture in enumerate(lectures)}
+    queue = []
+    results = {i + 1: 0 for i in range(n)}
+    visited = []
+
+    for i, lecture in enumerate(lectures):
+        if len(prerequisites[i + 1]) == 0:
+            queue.append([i + 1, times[i + 1]])
+            visited.append(i + 1)
+
+    while queue:
+        v, cost = queue.pop(0)
+        results[v] = cost
+
+        for i, lecture in enumerate(lectures):
+            if v in prerequisites[i + 1]:
+
+                prerequisites[i + 1].pop(prerequisites[i + 1].index(v))
+                if len(prerequisites[i + 1]) == 0 and i + 1 not in visited:
+                    queue.append([i + 1, cost + times[i + 1]])
+                    visited.append(i + 1)
+
+    return results
+
+print(curriculum(5, [[10, []], [10, [1]], [4, [1]], [4, [3, 1]], [3, [3]]]))
