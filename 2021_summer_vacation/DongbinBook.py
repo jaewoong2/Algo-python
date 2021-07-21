@@ -609,4 +609,59 @@ def curriculum(n, lectures):
 
     return results
 
-print(curriculum(5, [[10, []], [10, [1]], [4, [1]], [4, [3, 1]], [3, [3]]]))
+# print(curriculum(5, [[10, []], [10, [1]], [4, [1]], [4, [3, 1]], [3, [3]]]))
+
+# 모험가 길드 p.311
+def adventure_guild(n, adventurers: list):
+    groups = 0
+    adventurers.sort()
+    stack = []
+    for adventurer in adventurers:
+        stack.append(adventurer)
+        if stack and len(stack) == stack[-1]:
+            groups +=1
+            stack = []
+
+    return groups
+
+# print(adventure_guild(5, [2, 3, 1, 2, 2]))
+
+# 곱하기 혹은 더하기
+def plus_or_multiple(number: str):
+    temp = 0
+    for n in number:
+        num = int(n)
+        if temp == 0 and num > 0:
+            temp = num
+        elif num > 0 and temp != 0:
+            temp *= num
+
+    return temp
+
+# print(plus_or_multiple("567"))
+
+# 문자열 뒤집기
+def string_reverse(string: str):
+    newString = []
+    temp = [string[0]]
+    numberOfOne = 0
+    numberOfZero = 0
+
+    for i in range(1, len(string)):
+        if string[i] == temp[0]:
+            temp.append(string[i])
+        if string[i] != temp[0]:
+            newString.append(temp)
+            temp = [string[i]]
+    newString.append(temp)
+
+    for s in newString:
+        if s[0] == '0':
+            numberOfZero += 1
+        else:
+            numberOfOne += 1
+
+    return min(numberOfOne, numberOfZero)
+
+# print(string_reverse("0001100"))
+
