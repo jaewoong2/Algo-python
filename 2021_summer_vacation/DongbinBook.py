@@ -665,3 +665,35 @@ def string_reverse(string: str):
 
 # print(string_reverse("0001100"))
 
+def not_make_money(coins):
+    dp = [[] for _ in range(sum((coins)))]
+
+    for i, coin in enumerate(coins):
+        dp[coin] = [c for j, c in enumerate(coins) if i != j]
+
+    for _ in range(1, len(coins)):
+        for key in range(len((dp))):
+            for i, coin in enumerate(dp[key]):
+                if key + coin < sum(coins):
+                    dp[key + coin] = [c for j, c in enumerate(dp[key]) if i != j]
+
+    for i in range(1, len(dp)):
+        if not dp[i]:
+            return i
+
+# print(not_make_money([3, 2, 1, 1, 9]))
+
+def choice_ball(n, m, balls):
+    choice = []
+    count = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            if balls[i] != balls[j]:
+                choice.extend([i ,j])
+                if len(choice) == 2:
+                    choice = []
+                    count += 1
+
+    return count
+
+# print(choice_ball(8, 5, [1, 5, 4, 3, 2, 4 , 5, 2]))
