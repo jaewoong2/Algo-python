@@ -49,4 +49,68 @@ def sticker_attach(sticker):
         return max(max(dp), max(dp_))
     return max(sticker)
 
-print(sticker_attach([14, 6, 5, 11, 3, 9, 2, 10]))
+# print(sticker_attach([14, 6, 5, 11, 3, 9, 2, 10]))
+
+def very_far_node(n, vertex):
+    from collections import deque
+    graph = {i: [] for i in range(1, n + 1)}
+    queue = deque([[1, 0]])
+    visited = [False for _ in range(0, n + 1)]
+    visited[1] = True
+    result = [1, 0]
+
+    for v in vertex:
+        a, b = v
+        graph[a].append(b)
+        graph[b].append(a)
+
+    while queue:
+        v, depth = queue.popleft()
+
+        for node in graph[v]:
+            if not visited[node]:
+                queue += [[node, depth + 1]]
+                visited[node] = True
+
+
+        if result[1] == depth:
+            result = [result[0] + 1, depth]
+
+        elif result[1] < depth:
+            result = [1, depth]
+
+    return result[0]
+
+# print(very_far_node(6, [[3, 6], [4, 3], [3, 2], [1, 3], [1, 2], [2, 4], [5, 2]]))
+
+def goto_school(m, n, puddles):
+    board = [[0 for _ in range(m)] for _ in range(n)]
+    puddles = [[puddle[1] - 1, puddle[0] - 1] for puddle in puddles]
+
+    for col in range(m):
+        if [0, col] not in puddles:
+            board[0][col] = 1
+        else:
+            break
+
+    for row in range(n):
+        if [row, 0] not in puddles:
+            board[row][0] = 1
+        else:
+            break
+
+    for row in range(1, len(board)):
+        for col in range(1, len(board[row])):
+            if [row, col] not in puddles:
+                if [row - 1 , col] in puddles and [row, col - 1] in puddles:
+                    board[row][col] = 0
+                elif [row - 1, col] in puddles:
+                    board[row][col] = (board[row][col - 1]) % 1000000007
+                elif [row, col - 1] in puddles:
+                    board[row][col] = (board[row - 1][col]) % 1000000007
+                else:
+                    board[row][col] = (board[row - 1][col] + board[row][col - 1]) % 1000000007
+
+    return board[n - 1][m - 1]
+
+# print(goto_school(4, 3, [[2, 2]]))
