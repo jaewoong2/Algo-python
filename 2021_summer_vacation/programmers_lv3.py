@@ -114,3 +114,38 @@ def goto_school(m, n, puddles):
     return board[n - 1][m - 1]
 
 # print(goto_school(4, 3, [[2, 2]]))
+
+# 투 포인트 사용
+def shopping_gems(gems):
+    length = len(gems)
+    gems_kinds = set(gems)
+    counts = {gem: 0 for gem in gems}
+    curr = {gems[0]}
+    counts[gems[0]] = 1
+    answer = [0, length - 1]
+    start = 0
+    end = 0
+
+    if len(gems_kinds) == 1:
+        return [1, 1]
+
+    while start < length and end < length:
+        if len(curr) < len(gems_kinds):
+            end += 1
+            if end == length:
+                break
+            counts[gems[end]] += 1
+            curr.add(gems[end])
+        else:
+            if answer[1] - answer[0] > end - start:
+                answer = [start, end]
+            start += 1
+            if counts[gems[start - 1]] > 1:
+                counts[gems[start - 1]] -= 1
+            else:
+                counts[gems[start - 1]] = 0
+                curr.remove(gems[start - 1])
+
+    return [answer[0] + 1, answer[1] + 1]
+
+print(shopping_gems(["DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"]))
