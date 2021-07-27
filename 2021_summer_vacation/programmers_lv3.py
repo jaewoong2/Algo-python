@@ -148,4 +148,51 @@ def shopping_gems(gems):
 
     return [answer[0] + 1, answer[1] + 1]
 
-print(shopping_gems(["DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"]))
+# print(shopping_gems(["DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"]))
+
+# 택시 합승 요금
+def taxi_together(n, s, a, b, fares):
+    import heapq
+    graph = [[float('inf') for _ in range(n + 1)] for _ in range(n + 1)]
+    minimum = float('inf')
+
+    for fare in fares:
+        x, y, cost = fare
+        graph[x][y] = cost
+        graph[y][x] = cost
+
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if i != j:
+                    graph[i][j] = min(graph[i][k] + graph[k][j], graph[i][j])
+                else:
+                    graph[i][j] = 0
+
+    queue = [[cost, i] for i, cost in enumerate(graph[s])]
+
+    while queue:
+        cost, node = heapq.heappop(queue)
+        minimum = min(minimum, cost + graph[node][a] + graph[node][b])
+
+    return minimum
+
+# print(taxi_together(6, 4, 6, 2, [[4, 1, 10], [3, 5, 24], [5, 6, 2], [3, 1, 41], [5, 1, 24], [4, 6, 50], [2, 4, 66], [2, 3, 22], [1, 6, 25]]))
+
+# 야근지수
+def night_work(works, n):
+    if sum(works) <= n:
+        return 0
+
+    import heapq
+    values = [-1 * x for x in works]
+    heapq.heapify(values)
+
+    while n > 0:
+        v = heapq.heappop(values)
+        n -= 1
+        heapq.heappush(values, v + 1)
+
+    return sum([x * x for x in values])
+
+print(night_work([4, 3, 3], 4))
