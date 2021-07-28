@@ -195,4 +195,46 @@ def night_work(works, n):
 
     return sum([x * x for x in values])
 
-print(night_work([4, 3, 3], 4))
+# print(night_work([4, 3, 3], 4))
+
+# 경주로 건설
+def make_race_road(board):
+    length = len(board)
+    corners = []
+    rights = []
+    minimum = float('inf')
+    directions = {'L': [0, -1], 'R': [0, 1], 'D': [1, 0]}
+
+    def dfs(position, prev):
+        row, col, direction = position
+
+        for dir in directions:
+            dy, dx = directions[dir]
+
+            if row + dy == length - 1 and col + dx == length - 1:
+                corner = 0
+                result = prev + [[row + dy, col + dx, dir]]
+                for i in range(1, len(result)):
+                    if result[i][2] != result[i - 1][2]:
+                        corner += 1
+                corners.append(corner)
+                rights.append(len(result))
+
+            elif 0 <= row + dy < length and 0 <= col + dx < length:
+                if board[row + dy][col + dx] == 0:
+                    if [row + dy, col + dx] not in [x[0: 2] for x in prev]:
+                        dfs([row + dy, col + dx, dir], prev + [[row, col, direction]])
+
+    dfs([0, 0, 'R'], [])
+    dfs([0, 0, 'D'], [])
+
+    for i in range(len(corners)):
+        minimum = min(minimum, corners[i] * 500 + rights[i] * 100)
+
+
+    return minimum
+
+
+
+
+print(make_race_road(	[[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
