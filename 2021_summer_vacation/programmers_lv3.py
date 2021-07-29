@@ -235,6 +235,45 @@ def make_race_road(board):
     return minimum
 
 
+# print(make_race_road(	[[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
+
+def make_line(n, k):
+    def factorial(num):
+        value = 1
+        for n in range(1, num + 1):
+            value = value * n
+        return value
+
+    candidate = [i + 1 for i in range(n)]
+    result = []
+    number = n - 1
+    while len(result) < n:
+        per_num_number = factorial(number)
+        p = k // per_num_number
+        k = k % per_num_number
+        if k == 0:
+            p -= 1
+        result.append(candidate.pop(p))
+        number -= 1
+
+    return result
+
+    # def permutation(arr, targetLength, count, depth) -> list:
+    #     if targetLength == 1:
+    #         return [arr]
+    #
+    #     results = []
+    #     for i, pivot in enumerate(arr):
+    #         temp = [pivot]
+    #         for values in permutation(arr[:i] + arr[i + 1:], targetLength - 1, count, depth + 1):
+    #             count += 1
+    #             results.append(temp + values)
+    #             if count == k and depth == 0:
+    #                 return results
+    #
+    #     return results
+    #
+    # return permutation([i + 1 for i in range(n)], n, 0, 0)[-1]
 
 
-print(make_race_road(	[[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
+print(make_line(3, 5))
