@@ -197,7 +197,7 @@ def night_work(works, n):
 
 # print(night_work([4, 3, 3], 4))
 
-# 경주로 건설
+# 경주로 건설 # 틀린 풀이
 def make_race_road(board):
     length = len(board)
     corners = []
@@ -258,22 +258,86 @@ def make_line(n, k):
 
     return result
 
-    # def permutation(arr, targetLength, count, depth) -> list:
-    #     if targetLength == 1:
-    #         return [arr]
-    #
-    #     results = []
-    #     for i, pivot in enumerate(arr):
-    #         temp = [pivot]
-    #         for values in permutation(arr[:i] + arr[i + 1:], targetLength - 1, count, depth + 1):
-    #             count += 1
-    #             results.append(temp + values)
-    #             if count == k and depth == 0:
-    #                 return results
-    #
-    #     return results
-    #
-    # return permutation([i + 1 for i in range(n)], n, 0, 0)[-1]
+# print(make_line(3, 5))
 
+# 틀린 풀이(효율성)
+def judge_for_entrance(n, times):
+    result = 0
+    # 시작, 끝
+    processes = [[0, times[i]] for i in range(len(times))]
+    while n > 0:
+        minimum = [float('inf'), -1]
+        for i, process in enumerate(processes):
+            start, end = process
+            if minimum[0] > end:
+                minimum = [end, i]
 
-print(make_line(3, 5))
+        processes[minimum[1]][0] = minimum[0]
+        processes[minimum[1]][1] = minimum[0] + times[minimum[1]]
+        n -= 1
+        result = [minimum[1]][0] = minimum[0]
+
+    return result
+
+# print(judge_for_entrance(6, [7, 10]))
+
+# 경주로 건설
+def make_load(board):
+    # start = [row, col, cost, direction]
+    def dfs(start):
+        # table[row][col] => minimum cost
+        table = [[float('inf') for _ in range(len(board))] for _ in range(len(board))]
+        # 0: left 1: right 2: down
+        list_dx = [-1, 0, 1, 0]
+        list_dy = [0, 1, 0, -1]
+        stack = [start]
+        table[start[0]][start[1]] = start[2]
+        while stack:
+            row, col, cost, direction = stack.pop()
+
+            for i in range(len(list_dy)):
+                dx = list_dx[i]
+                dy = list_dy[i]
+
+                if (0 <= row + dy < len(board)) and (0 <= col + dx < len(board)):
+                    if board[row + dy][col + dx] == 1:
+                        continue
+
+                    if direction != i:
+                        if table[row + dy][col + dx] > cost + 600:
+                            table[row + dy][col + dx] = cost + 600
+                            stack.append([row + dy, col + dx, cost + 600, i])
+                    else:
+                        if table[row + dy][col + dx] > cost + 100:
+                            table[row + dy][col + dx] = cost + 100
+                            stack.append([row + dy, col + dx, cost + 100, i])
+
+        return table[-1][-1]
+
+    return(min(dfs([0, 0, 0, 1]), dfs([0, 0, 0, 2])))
+
+# print(make_load([[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,1,0,0,0],[0,0,0,1,0,0,0,1],[0,0,1,0,0,0,1,0],[0,1,0,0,0,1,0,0],[1,0,0,0,0,0,0,0]]))
+
+def entrance(n, times):
+    minimum = 1  # 최소 시간
+    maximum = max(times) * n  # 최대시간
+    answer = 0
+
+    while minimum < maximum:
+        count = 0
+        middle = (minimum + maximum) // 2
+
+        for time in times:
+            count += middle // time
+            if count >= n:
+                break
+
+        if count >= n:
+            answer = middle
+            maximum = middle - 1
+        else:
+            minimum = middle + 1
+
+    return answer
+
+print(entrance(6, [7, 10]))
