@@ -340,4 +340,68 @@ def entrance(n, times):
 
     return answer
 
-print(entrance(6, [7, 10]))
+# print(entrance(6, [7, 10]))
+
+def network(n, computers):
+    answer = 1
+    visited = [False for _ in range(n)]
+    stack = [0]
+    visited[0] = True
+
+    while stack:
+        curr = stack.pop()
+
+        for i, next in enumerate(computers[curr]):
+            if i != curr and next == 1 and not visited[i]:
+                stack.append(i)
+                visited[i] = True
+
+        if not stack:
+            for i in range(len(visited)):
+                if not visited[i]:
+                    answer += 1
+                    stack.append(i)
+                    visited[i] = True
+                    break
+
+    return answer
+
+# print(network(3, [[1, 1, 0], [1, 1, 0], [0, 0, 1]]))
+
+
+def pyramid_toothbrush(enroll, referral, seller, amount):
+    graph = {}
+    init_incomes = {}
+    result = {}
+
+    for i in range(len(enroll)):
+        graph[enroll[i]] = referral[i] == '-' and 'center' or referral[i]
+        result[enroll[i]] = 0
+
+
+    for i in range(len(seller)):
+        init_incomes[seller[i] + str(i)] = amount[i] * 100
+
+
+    for i in range(len(seller)):
+        name = seller[i]
+        income = amount[i] * 100
+        while name in graph:
+            tax = income // 10
+            result[name] += (income - tax)
+            name = graph[name]
+            income = tax
+
+    return [result[x] for x in result]
+
+# print(pyramid_toothbrush(["john", "mary", "edward", "sam", "emily", "jaimie", "tod", "young"],
+#                          ["-", "-", "mary", "edward", "mary", "mary", "jaimie", "edward"],
+#                          ["young", "john", "tod", "emily", "mary"],
+#                          [12, 4, 2, 5, 10]))
+
+
+
+
+
+
+
