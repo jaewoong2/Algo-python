@@ -2,6 +2,9 @@
 
 # 약수 구하기 https://www.acmicpc.net/problem/2501
 # n 의 약수중 k 번째로 작은 약수 를 return
+from builtins import enumerate
+
+
 def find_divisor():
     n, k = map(int, input().split())
     arr = []
@@ -397,12 +400,82 @@ def teaching(n, k, words):
 
 
 
-print(teaching(9, 8, ['antabtica',
-'antaxtica',
-'antadtica',
-'antaetica',
-'antaftica',
-'antagtica',
-'antahtica',
-'antajtica',
-'antaktica']))
+# print(teaching(9, 8, ['antabtica',
+# 'antaxtica',
+# 'antadtica',
+# 'antaetica',
+# 'antaftica',
+# 'antagtica',
+# 'antahtica',
+# 'antajtica',
+# 'antaktica']))
+
+def multi_scheduling(tabs, orders):
+    # tabs, n = map(int, input().split())
+    # orders = [x for x in map(int, input().split())]
+    answer = 0
+
+    plugs = []
+
+    for i, order in enumerate(orders):
+        # 1. 처음에 플러그 갯수만큼 꼽기
+        if tabs > len(plugs) and order not in plugs:
+            plugs.append(order)
+
+        # 2. 현재 사용할 것이 이미 있으면 그냥 넘어가기
+        elif order in plugs:
+            continue
+
+        # 3. 현재 사용할 것이 없으면 빼야할 것 빼기
+        else:
+            answer += 1
+            # 3.a 꽃힌 것 중에서 나중에 안 쓸 것 빼기
+            next_order = orders[i:]
+
+            zero = float('inf')
+            last_position = -1
+
+            for j, plug in enumerate(plugs):
+                if plug in next_order:
+                    last_position = max(j, last_position)
+                else:
+                    zero = j
+
+            if zero < len(next_order):
+                plugs.pop(zero)
+            else:
+                plugs.pop(last_position)
+
+            plugs.append(order)
+
+    print(answer)
+
+# print(multi_scheduling(2, [2, 3, 2, 3, 1, 2, 7]))
+
+
+def partial_sum(n, s, sequence):
+    n, s = map(int, input().split())
+    sequence = list(map(int, input().split()))
+    left = 0
+    right = 1
+    result = float('inf')
+    summarize = sequence[left]
+
+    while not (right == left == len(sequence)):
+        if summarize < s and right < len(sequence):
+            summarize += sequence[right]
+            right += 1
+
+        else:
+            summarize -= sequence[left]
+            left += 1
+
+        if summarize >= s:
+            result = min(result, right - left)
+
+    if result != float('inf'):
+        print(result)
+    else:
+        print(0)
+
+print(partial_sum(10, 15, [5,1,3,5,10,7,4,9,2,8]))
