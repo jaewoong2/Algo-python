@@ -410,6 +410,7 @@ def teaching(n, k, words):
 # 'antajtica',
 # 'antaktica']))
 
+# 멀티탭 스케쥴링
 def multi_scheduling(tabs, orders):
     # tabs, n = map(int, input().split())
     # orders = [x for x in map(int, input().split())]
@@ -452,7 +453,7 @@ def multi_scheduling(tabs, orders):
 
 # print(multi_scheduling(2, [2, 3, 2, 3, 1, 2, 7]))
 
-
+# 부분합
 def partial_sum(n, s, sequence):
     n, s = map(int, input().split())
     sequence = list(map(int, input().split()))
@@ -478,4 +479,93 @@ def partial_sum(n, s, sequence):
     else:
         print(0)
 
-print(partial_sum(10, 15, [5,1,3,5,10,7,4,9,2,8]))
+# print(partial_sum(10, 15, [5,1,3,5,10,7,4,9,2,8]))
+
+
+def find_minimum_bus_cost():
+    import sys
+    input = sys.stdin.readline
+    # 초기값 설정
+    cities = int(input())
+    buses = int(input())
+    graph = [[float('inf') for _ in range(cities)] for _ in range(cities)]
+
+    for _ in range(buses):
+        f, t, c = map(int, input().split())
+        graph[f - 1][f - 1] = graph[t - 1][t - 1] = 0
+        graph[f - 1][t - 1] = min(c, graph[f - 1][t - 1])
+
+    start, end = map(int, input().split())
+
+    # solution
+
+    def dijkstra(nums, start, end, graphs):
+        import heapq
+        costs = [float('inf') for _ in range(nums)]
+        costs[start] = 0
+        queue = [[costs[start], start]]
+
+        while queue:
+            cost, node = heapq.heappop(queue)
+
+            if cost > costs[node]:
+                continue
+
+            for next in range(len(graphs[node])):
+                if node != next:
+                    if graphs[node][next] + cost < costs[next]:
+                        costs[next] = graphs[node][next] + cost
+                        heapq.heappush(queue, [costs[next], next])
+
+        return costs[end]
+
+    return dijkstra(cities, start - 1, end - 1, graph)
+
+# print(find_minimum_bus_cost())
+
+
+def min_spaning_tree():
+    import sys
+    input = sys.stdin.readline
+    vertexes, edges = map(int, input().split())
+    graph = []
+    results = 0
+
+    for _ in range(edges):
+        f, t, c = map(int, input().split())
+        graph.append([c, f - 1, t - 1])
+
+    graph.sort(key=lambda x:x[0])
+    #
+    parent = [x for x in range(vertexes)]
+
+    def union(a, b):
+        a_parent = find(a)
+        b_parent = find(b)
+
+        if a_parent > b_parent:
+            parent[b_parent] = a_parent
+        else:
+            parent[a_parent] = b_parent
+
+    def find(x):
+        y = x
+        while parent[y] != y:
+
+            y = parent[y]
+
+        return y
+
+
+    for node in graph:
+        cost, f, t = node
+        if find(f) != find(t):
+            union(f, t)
+            results += cost
+
+    return results
+
+print(min_spaning_tree())
+
+
+
