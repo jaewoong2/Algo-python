@@ -565,7 +565,220 @@ def min_spaning_tree():
 
     return results
 
-print(min_spaning_tree())
+# print(min_spaning_tree())
+
+# def partial_string():
+#     import sys
+#     input = sys.stdin.readline
+# 
+#     # string = str(input()).split()[0]
+#     # partial = str(input()).split()[0]
+#     print(make_table('aabaab'))
+# 
+# 
+# print(partial_string())
 
 
+def insert_operator():
+    n = int(input())
+    numbers = [x for x in map(int, input().split())]
 
+    # + - x ÷
+    operators = [x for x in map(int, input().split())]
+    results = []
+
+
+    def dfs(result, ops, now):
+        if now == n:
+            results.append(result)
+
+
+        for i in range(len(ops)):
+            if ops[i] > 0:
+                copy_ops = [x for x in ops[:]]
+                copy_ops[i] -= 1
+
+                if i == 0:
+                    dfs(result + numbers[now], copy_ops, now + 1)
+                elif i == 1:
+                    dfs(result - numbers[now], copy_ops, now + 1)
+                elif i == 2:
+                    dfs(result * numbers[now], copy_ops, now + 1)
+                elif i == 3:
+                    if result < 0:
+                        dfs(-(-result // numbers[now]), copy_ops, now + 1)
+                    else:
+                        dfs(result // numbers[now], copy_ops, now + 1)
+
+    dfs(numbers[0], operators, 1)
+
+    print(max(results))
+    print(min(results))
+
+# insert_operator()
+
+def fn_bracket():
+    brackets = input()
+    stack = []
+    depths = []
+
+    for bracket in brackets:
+        flag = False
+        if stack:
+            if stack[-1] == "(" and bracket == ")":
+                flag = True
+                depths += [[len(stack), 2]]
+                stack.pop()
+
+            elif stack[-1] == "[" and bracket == "]":
+                flag = True
+                depths += [[len(stack), 3]]
+                stack.pop()
+
+        if bracket == '(' or bracket == '[':
+            flag = True
+            stack.append(bracket)
+
+
+        if not flag:
+            return 0
+
+
+    while depths:
+        max_index = max(enumerate(depths), key=lambda x:x[1][0])[0]
+
+# print(fn_bracket())
+
+def rain_water():
+    height, width = map(int, input().split())
+    blocks = [x for x in map(int, input().split())]
+    rains = 0
+
+    for i in range(1, len(blocks) - 1):
+        left_max = max(blocks[:i])
+        right_max = max(blocks[i+1:])
+        minimum_left_right = min(left_max, right_max)
+        if blocks[i] < minimum_left_right:
+            rains += minimum_left_right - blocks[i]
+
+
+    return rains
+
+
+# print(rain_water())
+
+def multi_tab():
+    import sys
+    input = sys.stdin.readline
+
+    count = 0
+    n, m = map(int, input().split())
+    orders = [x for x in map(int, input().split())]
+    plugs = []
+
+    for i, order in enumerate(orders):
+        if len(plugs) < n:
+            if order not in plugs:
+                plugs.append(order)
+
+        else:
+            if order not in plugs:
+                flag = False
+                next_orders = orders[i:]
+                changeable = 0
+                for j, plug in enumerate(plugs):
+                    if plug not in next_orders:
+                        plugs[j] = order
+                        flag = True
+                        count += 1
+                        break
+
+                    if next_orders.index(plugs[changeable]) < next_orders.index(plugs[j]):
+                        changeable = j
+
+                if not flag:
+                    plugs[changeable] = order
+                    count += 1
+
+    return count
+
+# print(multi_tab())
+
+def partial_sum_2():
+    import sys
+    input = sys.stdin.readline
+    n, k = map(int, input().split())
+    sequences = [x for x in map(int, input().split())]
+    left = 0
+    right = 1
+    length = float('inf')
+
+    while left < right and (left < n and right < n):
+        if sum(sequences[left:right]) < k:
+            right += 1
+
+        elif sum(sequences[left:right]) >= k:
+            length = min(right - left, length)
+            left += 1
+
+    return length
+
+# print(partial_sum_2())
+
+def Fly_me_to_the_Alpha_Centauri():
+    test_case = int(input())
+    cases = []
+    results = []
+    for _ in range(test_case):
+        x, y = map(int, input().split())
+        results.append([])
+        cases.append([x, y])
+
+
+    def dfs(move, x, y, count, idx, visited):
+        print(move, x, y, visited)
+        if x < 0:
+            return
+
+        if x >= y:
+            return
+
+        if x + 1 == y and move in [0, 1, 2]:
+            results[idx].append(count)
+            return
+
+
+        for i in range(-1, 2):
+            if move + i > 0:
+                if x + move + i not in visited:
+                    dfs(move + i, x + move + i, y, count + 1, idx, visited + [x + move + i])
+
+
+    for i, case in enumerate(cases):
+        x, y = case
+        dfs(0, x, y, 0, i, [0])
+        results[i] = min(results[i])
+
+    for result in results:
+        print(result + 1)
+
+# print(Fly_me_to_the_Alpha_Centauri())
+
+
+def job_preference(table, languages, preference):
+    obj = []
+    for index, point in enumerate(table):
+        result = 0
+        arr = point.split(" ")
+        kv = {x: len(arr) - i for i, x in enumerate(arr)}
+        print(kv)
+        for i, language in enumerate(languages):
+            if language in kv:
+                result += (kv[language] * preference[i])
+        obj.append([arr[0], result])
+
+
+    return max(obj, key=lambda x:(x[1], -ord(x[0][0])))[0]
+
+print(job_preference(["SI JAVA JAVASCRIPT SQL PYTHON C#", "CONTENTS JAVASCRIPT JAVA PYTHON SQL C++", "HARDWARE C C++ PYTHON JAVA JAVASCRIPT", "PORTAL JAVA JAVASCRIPT PYTHON KOTLIN PHP", "GAME C++ C# JAVASCRIPT C JAVA"],
+                     ["JAVA", "JAVASCRIPT"]	,[7, 5]))
