@@ -725,60 +725,16 @@ def partial_sum_2():
 
 # print(partial_sum_2())
 
-def Fly_me_to_the_Alpha_Centauri():
-    test_case = int(input())
-    cases = []
-    results = []
-    for _ in range(test_case):
-        x, y = map(int, input().split())
-        results.append([])
-        cases.append([x, y])
+def sum_of_num():
+    s = int(input())
+    num = 0
+
+    while s >= 0:
+        num += 1
+        s -= num
+
+    return (num - 1)
 
 
-    def dfs(move, x, y, count, idx, visited):
-        print(move, x, y, visited)
-        if x < 0:
-            return
+print(sum_of_num())
 
-        if x >= y:
-            return
-
-        if x + 1 == y and move in [0, 1, 2]:
-            results[idx].append(count)
-            return
-
-
-        for i in range(-1, 2):
-            if move + i > 0:
-                if x + move + i not in visited:
-                    dfs(move + i, x + move + i, y, count + 1, idx, visited + [x + move + i])
-
-
-    for i, case in enumerate(cases):
-        x, y = case
-        dfs(0, x, y, 0, i, [0])
-        results[i] = min(results[i])
-
-    for result in results:
-        print(result + 1)
-
-# print(Fly_me_to_the_Alpha_Centauri())
-
-
-def job_preference(table, languages, preference):
-    obj = []
-    for index, point in enumerate(table):
-        result = 0
-        arr = point.split(" ")
-        kv = {x: len(arr) - i for i, x in enumerate(arr)}
-        print(kv)
-        for i, language in enumerate(languages):
-            if language in kv:
-                result += (kv[language] * preference[i])
-        obj.append([arr[0], result])
-
-
-    return max(obj, key=lambda x:(x[1], -ord(x[0][0])))[0]
-
-print(job_preference(["SI JAVA JAVASCRIPT SQL PYTHON C#", "CONTENTS JAVASCRIPT JAVA PYTHON SQL C++", "HARDWARE C C++ PYTHON JAVA JAVASCRIPT", "PORTAL JAVA JAVASCRIPT PYTHON KOTLIN PHP", "GAME C++ C# JAVASCRIPT C JAVA"],
-                     ["JAVA", "JAVASCRIPT"]	,[7, 5]))
